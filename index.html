@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAUM Logix — Next-Gen Mini-TMS Dashboard</title>
+  <meta name="description" content="Premium logistics control room with live tracking, AI-optimized routing, and automated carrier bidding.">
+  
+  <!-- Google Fonts: Outfit (Header) & Inter (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  
+  <!-- Background Glows -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="app-container">
+    
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="logo-text">
+            <span class="brand">RAUM</span>
+            <span class="subtitle">LOGIX TMS</span>
+          </div>
+        </div>
+        <div class="system-status">
+          <span class="status-indicator online"></span>
+          <span class="status-text">Система активна (Simulated AI Mode)</span>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="time-widget">
+          <span id="current-time">00:00:00</span>
+          <span class="divider">|</span>
+          <span id="current-date">--.--.----</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT GRID ===== -->
+    <main class="dashboard-grid">
+      
+      <!-- LEFT WORKSPACE: STATS & MAP/TABLE -->
+      <div class="workspace-left">
+        
+        <!-- ROW 1: KPI STATS -->
+        <section class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon rev-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="stat-details">
+              <span class="stat-label">Загальний дохід (місяць)</span>
+              <span class="stat-value" id="kpi-revenue">€184,250</span>
+              <span class="stat-trend positive">↑ +12.4% з минулого тижня</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon trips-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div class="stat-details">
+              <span class="stat-label">Активні рейси</span>
+              <span class="stat-value" id="kpi-active-trips">8 / 12</span>
+              <span class="stat-trend neutral">4 очікують призначення</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon margin-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div class="stat-details">
+              <span class="stat-label">Середня маржа (%)</span>
+              <span class="stat-value" id="kpi-avg-margin">16.4%</span>
+              <span class="stat-trend positive">↑ Оптимальний рівень</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon reliability-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="stat-details">
+              <span class="stat-label">KPI надійності доставки</span>
+              <span class="stat-value" id="kpi-reliability">98.2%</span>
+              <span class="stat-trend positive">↑ Без критичних запізнень</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ROW 2: TABS & CENTRAL VIEW AREA -->
+        <section class="main-view-card glass-panel">
+          <div class="view-header">
+            <div class="tabs">
+              <button class="tab-btn active" data-target="map-view-container">
+                <span class="tab-icon">🗺️</span> Жива GPS Карта
+              </button>
+              <button class="tab-btn" data-target="trips-table-container">
+                <span class="tab-icon">📋</span> Реєстр рейсів та замовлень
+              </button>
+              <button class="tab-btn" data-target="carriers-list-container">
+                <span class="tab-icon">🚛</span> База перевізників
+              </button>
+            </div>
+            <div class="view-actions">
+              <button id="btn-create-trip" class="btn-primary-glow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Нове замовлення
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB CONTENT: MAP -->
+          <div id="map-view-container" class="tab-content active">
+            <div id="leaflet-map"></div>
+            <!-- Floating telemetry panel on top of the map -->
+            <div class="map-floating-telemetry" id="map-telemetry">
+              <h4>🎯 Активний моніторинг рефрижератора</h4>
+              <div class="telemetry-info">
+                <div><strong>Рейс:</strong> <span id="tel-route">Київ → Варшава</span></div>
+                <div><strong>Перевізник:</strong> <span id="tel-carrier">EuroTrans UA</span></div>
+                <div><strong>Вантаж:</strong> <span id="tel-cargo">Медикаменти (Термо)</span></div>
+              </div>
+              <div class="telemetry-gauges">
+                <div class="gauge">
+                  <span class="gauge-label">Температура</span>
+                  <span class="gauge-val alert-success" id="tel-temp">+3.8°C</span>
+                  <span class="gauge-bar"><span id="tel-temp-bar" style="width: 38%"></span></span>
+                </div>
+                <div class="gauge">
+                  <span class="gauge-label">Швидкість фури</span>
+                  <span class="gauge-val" id="tel-speed">78 км/год</span>
+                  <span class="gauge-bar"><span id="tel-speed-bar" style="width: 78%"></span></span>
+                </div>
+              </div>
+              <div class="sensor-graph-container">
+                <canvas id="sensor-mini-chart" height="60"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB CONTENT: TRIPS TABLE -->
+          <div id="trips-table-container" class="tab-content">
+            <div class="table-wrapper">
+              <table class="tms-table">
+                <thead>
+                  <tr>
+                    <th>ID / Маршрут</th>
+                    <th>Вантаж</th>
+                    <th>Ціна (Клієнт)</th>
+                    <th>Ставка (Перевізник)</th>
+                    <th>Маржа (%)</th>
+                    <th>Перевізник</th>
+                    <th>Статус</th>
+                    <th>Дії</th>
+                  </tr>
+                </thead>
+                <tbody id="trips-tbody">
+                  <!-- JS builds entries dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB CONTENT: CARRIER DATABASE -->
+          <div id="carriers-list-container" class="tab-content">
+            <div class="carriers-grid" id="carriers-grid-container">
+              <!-- Dynamically rendered carrier cards -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ROW 3: LIVE SENSORS & SYSTEM LOG FEED -->
+        <section class="terminal-panel glass-panel">
+          <div class="card-header">
+            <h3>📟 Стрічка системних подій та GPS телеметрії (Live Feed)</h3>
+            <span class="pulse-icon"><span class="pulsing-dot"></span> LIVE</span>
+          </div>
+          <div class="terminal-body" id="terminal-logs">
+            <!-- Simulated logs scrolling in -->
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT SIDEBAR: AI OPTIMIZER & BROADCAST -->
+      <aside class="workspace-right">
+        
+        <!-- CARD 1: MASS BROADCAST SIMULATOR -->
+        <section class="sidebar-card glass-panel highlight-border">
+          <div class="card-header">
+            <h3>📡 Радар масової розсилки заявок</h3>
+            <span class="badge badge-glow">20+ перевізників</span>
+          </div>
+          <div class="broadcast-body">
+            <p class="section-desc">Оберіть заявку для миттєвого тендеру серед 20+ перевізників у базі:</p>
+            
+            <div class="broadcast-selector-group">
+              <select id="broadcast-cargo-select" class="tms-select">
+                <!-- Filled dynamically with "Pending" cargoes -->
+              </select>
+              <button id="btn-start-broadcast" class="btn-accent">Запустити тендер</button>
+            </div>
+
+            <!-- Animated Radar Area -->
+            <div class="radar-container hidden" id="radar-screen">
+              <div class="radar-circle">
+                <div class="radar-sweep"></div>
+                <div class="radar-ping border-ping"></div>
+                <!-- Mini pings appearing dynamically -->
+                <div class="radar-target" style="top: 30%; left: 40%;"></div>
+                <div class="radar-target" style="top: 65%; left: 20%;"></div>
+                <div class="radar-target" style="top: 45%; left: 80%;"></div>
+              </div>
+              <div class="radar-status-text">Сканування вільних вантажівок поблизу...</div>
+              <div class="bids-live-stream" id="bids-list">
+                <!-- Dynamically added bids from carriers -->
+              </div>
+            </div>
+
+            <!-- Tender Winner Screen -->
+            <div class="tender-result hidden" id="tender-result-screen">
+              <div class="success-checkmark">🎉</div>
+              <h4>Тендер успішно завершено!</h4>
+              <p>Отримано найкращу ставку для рейсу:</p>
+              <div class="winner-card">
+                <div class="winner-name" id="winner-carrier-name">West-East Logistics</div>
+                <div class="winner-details">
+                  <span>Ставка: <strong id="winner-bid-value">€1,450</strong></span>
+                  <span>Маржа: <strong id="winner-margin-val">17.1%</strong></span>
+                </div>
+              </div>
+              <div class="winner-actions">
+                <button id="btn-accept-winner" class="btn-primary">Затвердити рейс</button>
+                <button id="btn-reset-tender" class="btn-secondary">Скинути</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- CARD 2: AI LOGISTICS COPILOT (CHAT) -->
+        <section class="sidebar-card glass-panel chat-card">
+          <div class="card-header">
+            <div class="ai-title-group">
+              <div class="ai-avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12A10 10 0 0 1 12 2z"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div>
+                <h3>R.A.U.M. Copilot</h3>
+                <span class="ai-status">Розумний логістичний помічник</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-messages" id="chat-messages-box">
+            <div class="msg bot">
+              Вітаю, Владе! Я твоя інтелектуальна матриця керування логістикою. Я можу:
+              <ul>
+                <li>Оптимізувати ставки активних замовлень.</li>
+                <li>Сформувати супровідні інструкції водіям для Viber/Telegram.</li>
+                <li>Підказати ризики затримок на кордонах у реальному часі.</li>
+              </ul>
+              Який твій запит?
+            </div>
+          </div>
+          <div class="chat-quick-actions">
+            <button class="quick-action-btn" data-action="optimize">⚡ Оптимізувати рейси</button>
+            <button class="quick-action-btn" data-action="instructions">📋 Інструкція водію</button>
+            <button class="quick-action-btn" data-action="borders">🇪🇺 Черги на кордонах</button>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" id="chat-user-input" class="tms-input" placeholder="Запитати у R.A.U.M. Copilot..." autocomplete="off">
+            <button id="btn-chat-send" class="btn-icon-send">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </section>
+      </aside>
+
+    </main>
+
+  </div>
+
+  <!-- ===== CREATE TRIP MODAL ===== -->
+  <div id="create-trip-modal" class="modal-overlay hidden">
+    <div class="modal glass-panel">
+      <div class="modal-header">
+        <h3>➕ Створення нового логістичного замовлення</h3>
+        <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+      </div>
+      <form id="create-trip-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="route-from">Звідки (Місто, Країна)</label>
+            <input type="text" id="route-from" placeholder="напр. Київ, Україна" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="route-to">Куди (Місто, Країна)</label>
+            <input type="text" id="route-to" placeholder="напр. Берлін, Німеччина" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="cargo-name">Вантаж (Деталі)</label>
+            <input type="text" id="cargo-name" placeholder="напр. Автозапчастини, 20т" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="cargo-type">Тип транспорту / Режим</label>
+            <select id="cargo-type" class="tms-select">
+              <option value="Тент">Тент (Стандарт)</option>
+              <option value="Рефрижератор (Термо)">Рефрижератор (Температурний режим)</option>
+              <option value="Зіп-Тент">Зіп-Тент (Швидка доставка)</option>
+              <option value="Негабарит">Негабаритний майданчик</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="price-client">Бюджет клієнта (Продаж, €)</label>
+            <input type="number" id="price-client" placeholder="напр. 2200" required>
+          </div>
+          <div class="form-group">
+            <label for="price-carrier">Орієнтовна ставка перевізника (Купівля, €)</label>
+            <input type="number" id="price-carrier" placeholder="напр. 1850" required>
+          </div>
+        </div>
+
+        <!-- Live Margin Calculator inside the form -->
+        <div class="live-calc-box">
+          <div class="calc-metric">
+            <span class="calc-label">Розрахунковий прибуток (Маржа)</span>
+            <span class="calc-val" id="calc-margin-eur">€0</span>
+          </div>
+          <div class="calc-metric">
+            <span class="calc-label">Рентабельність рейсу (%)</span>
+            <span class="calc-val" id="calc-margin-pct">0%</span>
+          </div>
+          <div class="calc-status" id="calc-status-warning">Введіть ціни для розрахунку</div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-modal">Скасувати</button>
+          <button type="submit" class="btn-primary" id="btn-submit-trip">Створити замовлення</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container"></div>
+
+  <!-- Leaflet Map Script -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+  
+  <script src="app.js"></script>
+</body>
+</html>
