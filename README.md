@@ -5,7 +5,7 @@
 ![TMS Map View](./screenshot-map.png)
 ![TMS Dashboard View](./screenshot-dashboard.png)
 
-Цей проект розроблено як інноваційне доповнення до професійного резюме в сфері логістики та управління ланцюгами постачання.
+
 
 ---
 
