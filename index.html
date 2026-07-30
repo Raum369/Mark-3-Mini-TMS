@@ -18,11 +18,11 @@
             theme: {
                 extend: {
                     colors: {
-                        sidebar: '#0a1930',
-                        sidebarActive: '#1a365d',
-                        background: '#f8f9fa',
+                        sidebar: '#1E293B',
+                        sidebarActive: '#0F172A',
+                        background: '#F8FAFC',
                         card: '#ffffff',
-                        primary: '#0a1930',
+                        primary: '#0F172A',
                         secondary: '#10b981',
                         accent: '#3b82f6'
                     },
@@ -43,7 +43,7 @@
             vertical-align: middle;
         }
         html { font-size: 14.4px; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; transition: filter 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; transition: filter 0.3s ease; }
         
         html.dark-mode { filter: invert(1) hue-rotate(180deg); background: #000; }
         html.dark-mode img, html.dark-mode #map, html.dark-mode .leaflet-layer, html.dark-mode .bg-sidebar, html.dark-mode .nav-btn, html.dark-mode .logo-container { filter: invert(1) hue-rotate(180deg); }
@@ -65,17 +65,20 @@
         .row-highlight {
             animation: highlightPulse 3s cubic-bezier(0, 0, 0.2, 1);
         }
+        
+        .heatmap-blur {
+            filter: blur(30px);
+            opacity: 0.7;
+            mix-blend-mode: multiply;
+        }
     </style>
 </head>
-<body class="text-gray-800 flex overflow-hidden" style="zoom: 0.8; width: 125vw; height: 125vh; background-color: #f8f9fa;">
+<body class="text-gray-800 flex overflow-hidden" style="zoom: 0.8; width: 125vw; height: 125vh; background-color: #F8FAFC;">
 
     <!-- SideNavBar (Dark Blue) -->
     <aside class="w-64 bg-sidebar text-white flex flex-col z-20 shrink-0 shadow-xl">
         <div class="p-8 pb-6">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-[14px] bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)] shrink-0">
-                    <span class="material-symbols-outlined text-white text-[28px]">layers</span>
-                </div>
                 <div class="flex flex-col justify-center">
                     <h1 class="text-[26px] font-black text-white leading-none tracking-wider">R.A.U.M.</h1>
                     <p class="text-[10px] font-bold text-cyan-400 uppercase tracking-[0.2em] mt-1.5">LOGISTICS</p>
@@ -97,13 +100,33 @@
                 <span class="font-body text-sm font-semibold" data-i18n="nav_carriers">База Перевізників</span>
             </a>
             <div class="my-6 border-t border-white/10 mx-4"></div>
-            <a href="#" id="btn-toggle-radar" class="flex items-center gap-4 px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group">
-                <span class="material-symbols-outlined group-hover:scale-110 transition-transform text-orange-400">radar</span>
-                <span class="font-body text-sm font-semibold" data-i18n="nav_radar">Тендерний Радар</span>
+            <a href="#" id="btn-toggle-radar" class="flex flex-col px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group">
+                <div class="flex items-center gap-4 w-full">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform text-orange-400">radar</span>
+                    <span class="font-body text-sm font-semibold" data-i18n="nav_radar">Тендерний Радар</span>
+                </div>
+                <div class="hidden group-hover:block text-[11px] text-gray-400 mt-2 ml-10 font-normal leading-snug" data-i18n="tooltip_nav_radar">
+                    Автоматично знаходить перевізників та обирає ставку з максимальною маржею.
+                </div>
             </a>
-            <a href="#" id="btn-toggle-copilot" class="flex items-center gap-4 px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group">
-                <span class="material-symbols-outlined group-hover:scale-110 transition-transform text-purple-400">smart_toy</span>
-                <span class="font-body text-sm font-semibold" data-i18n="nav_copilot">AI Асистент</span>
+            <a href="#" id="btn-toggle-heatmap" class="flex flex-col px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group relative">
+                <div class="flex items-center gap-4 w-full">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform text-pink-400">explore</span>
+                    <span class="font-body text-sm font-semibold" data-i18n="nav_heatmap">Local-for-Local</span>
+                    <span class="absolute top-4 right-3 w-2 h-2 bg-pink-500 rounded-full animate-ping"></span>
+                </div>
+                <div class="hidden group-hover:block text-[11px] text-gray-400 mt-2 ml-10 font-normal leading-snug" data-i18n="tooltip_nav_heatmap">
+                    Аналізує ринок на дефіцит або надлишок транспорту в різних регіонах.
+                </div>
+            </a>
+            <a href="#" id="btn-toggle-copilot" class="flex flex-col px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group">
+                <div class="flex items-center gap-4 w-full">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform text-purple-400">smart_toy</span>
+                    <span class="font-body text-sm font-semibold" data-i18n="nav_copilot">AI Асистент</span>
+                </div>
+                <div class="hidden group-hover:block text-[11px] text-gray-400 mt-2 ml-10 font-normal leading-snug" data-i18n="tooltip_nav_copilot">
+                    Розумний агент. Оптимізує маршрути та автономно вирішує логістичні кризи.
+                </div>
             </a>
         </nav>
         
@@ -127,7 +150,7 @@
         <header class="h-24 flex items-center justify-between px-8 z-10 shrink-0">
             <div class="relative w-[450px]">
                 <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
-                <input class="w-full bg-white border border-gray-100 rounded-full py-3.5 pl-14 pr-6 text-sm focus:ring-2 focus:ring-accent outline-none shadow-soft transition-shadow hover:shadow-md" id="search-input" placeholder="Search shipments, drivers or routes..." type="text"/>
+                <input class="w-full bg-white border border-gray-100 rounded-full py-3.5 pl-14 pr-6 text-sm focus:ring-2 focus:ring-accent outline-none shadow-soft transition-shadow hover:shadow-md" id="search-input" placeholder="Шукати рейси, водіїв чи маршрути..." data-i18n-placeholder="search_placeholder" type="text"/>
             </div>
             
             <div class="flex items-center gap-6">
@@ -325,7 +348,7 @@
                     <div class="flex justify-between items-center mb-8">
                         <div>
                             <h2 class="text-2xl font-headline font-bold text-primary mb-1" data-i18n="table_trips_title">Fleet Driver Manifest</h2>
-                            <p class="text-sm text-gray-500">Real-time shift tracking and performance metrics</p>
+                            <p class="text-sm text-gray-500" data-i18n="table_trips_subtitle">Відстеження рейсів та показників ефективності в реальному часі</p>
                         </div>
                         <div class="flex gap-4">
                             <button class="bg-gray-50 text-gray-700 font-semibold px-6 py-2.5 rounded-full border border-gray-200 hover:bg-gray-100 hover:shadow-sm transition-all" data-i18n="btn_cancel">Export CSV</button>

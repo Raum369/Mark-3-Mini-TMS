@@ -61,17 +61,21 @@ const i18n = {
     kpi_tt_on_time: "Вчасна доставка", kpi_tt_temp_violations: "Порушення t°",
     map_title: "Live GPS Відстеження", map_active: "Активно",
     tel_title: "Активна Телеметрія", tel_route: "Маршрут", tel_carrier: "Перевізник", tel_cargo: "Вантаж", tel_temp: "Температура", tel_speed: "Швидкість",
-    sys_feed_title: "Системний Журнал",
-    table_trips_title: "Реєстр Замовлень", table_col_id: "ID / Маршрут", table_col_cargo: "Вантаж", table_col_price: "Ціна (Клієнт)", table_col_bid: "Ставка (Перевізник)", table_col_margin: "Маржа", table_col_carrier: "Перевізник", table_col_status: "Статус", table_col_actions: "Дії",
+    sys_feed_title: "Системний Журнал", search_placeholder: "Шукати рейси, водіїв чи маршрути...",
+    table_trips_title: "Реєстр Замовлень", table_trips_subtitle: "Відстеження рейсів та показників ефективності в реальному часі", table_col_id: "ID / Маршрут", table_col_cargo: "Вантаж", table_col_price: "Ціна (Клієнт)", table_col_bid: "Ставка (Перевізник)", table_col_margin: "Маржа", table_col_carrier: "Перевізник", table_col_status: "Статус", table_col_actions: "Дії",
     radar_title: "Тендерний Радар", radar_subtitle: "Система Масового Сповіщення", radar_select_label: "Оберіть Очікуюче Замовлення", radar_btn_start: "Розпочати Трансляцію Тендеру", radar_scanning: "Сканування перевізників...", radar_tender_complete: "Тендер Завершено", radar_tender_desc: "Знайдено найкращу ставку для замовлення.", radar_bid_amount: "Сума ставки:", radar_est_margin: "Очікувана маржа:", btn_reject: "Відхилити", btn_accept: "Прийняти та Призначити",
-    ai_subtitle: "Логістичний AI Асистент", ai_name: "Системний AI", ai_welcome: "Вітаю, Владе. Я ваша логістична інтелектуальна матриця. Я можу оптимізувати маршрути, прогнозувати затримки на кордонах та формувати інструкції водіям. Чим можу допомогти сьогодні?", ai_quick_1: "Оптимізувати Маршрути", ai_quick_2: "Черги на Кордонах", ai_input_placeholder: "Повідомлення для Copilot...",
+    ai_subtitle: "Логістичний AI Асистент", ai_name: "Системний AI", ai_welcome: "Я ваша логістична інтелектуальна матриця R.A.U.M.<br>Я можу оптимізувати маршрути, прогнозувати затримки на кордонах та формувати інструкції водіям.<br>Чим можу допомогти сьогодні?", ai_quick_1: "Оптимізувати Маршрути", ai_quick_2: "Черги на Кордонах", ai_input_placeholder: "Повідомлення для Copilot...",
     modal_new_order_title: "Нове Замовлення", modal_from: "Звідки", modal_to: "Куди", modal_cargo_details: "Деталі Вантажу", modal_transport_type: "Тип Транспорту", modal_client_budget: "Бюджет Клієнта (€)", modal_carrier_rate: "Очікувана Ставка (€)", modal_est_margin: "Очікувана Маржа", modal_profitability: "Рентабельність", btn_cancel: "Скасувати", btn_create_order: "Створити Замовлення",
     // Dynamic text
     status_intransit: "В дорозі", status_pending: "Очікує", status_delivered: "Доставлено",
     btn_track: "Відстежити",
     carrier_free: "Вільний", carrier_busy: "Зайнятий",
     reliability: "Надійність", rating: "Рейтинг",
-    msg_gps: "Синхронізація GPS успішна.", msg_border: "Перевірка черг на кордоні (Краківець).", msg_rates: "Ставки перевізників оновлено.", msg_tel: "Телеметрія: В нормі."
+    msg_gps: "Синхронізація GPS успішна.", msg_border: "Перевірка черг на кордоні (Краківець).", msg_rates: "Ставки перевізників оновлено.", msg_tel: "Телеметрія: В нормі.",
+    nav_heatmap: "Аналіз Попиту",
+    tooltip_nav_radar: "Автоматично знаходить перевізників та обирає ставку з максимальною маржею.",
+    tooltip_nav_heatmap: "Аналізує ринок на дефіцит або надлишок транспорту в різних регіонах.",
+    tooltip_nav_copilot: "Розумний агент. Оптимізує маршрути та автономно вирішує логістичні кризи."
   },
   en: {
     nav_subtitle: "Next-Gen TMS", nav_dashboard: "Dashboard", nav_trips: "Trips & Orders", nav_carriers: "Carriers Base",
@@ -89,8 +93,8 @@ const i18n = {
     kpi_tt_on_time: "On-time Delivery", kpi_tt_temp_violations: "Temp Violations",
     map_title: "Live GPS Tracking", map_active: "Active",
     tel_title: "Active Telemetry", tel_route: "Route", tel_carrier: "Carrier", tel_cargo: "Cargo", tel_temp: "Temperature", tel_speed: "Speed",
-    sys_feed_title: "System Feed",
-    table_trips_title: "Order Registry", table_col_id: "ID / Route", table_col_cargo: "Cargo", table_col_price: "Price (Client)", table_col_bid: "Bid (Carrier)", table_col_margin: "Margin", table_col_carrier: "Carrier", table_col_status: "Status", table_col_actions: "Actions",
+    sys_feed_title: "System Feed", search_placeholder: "Search shipments, drivers or routes...",
+    table_trips_title: "Order Registry", table_trips_subtitle: "Real-time shift tracking and performance metrics", table_col_id: "ID / Route", table_col_cargo: "Cargo", table_col_price: "Price (Client)", table_col_bid: "Bid (Carrier)", table_col_margin: "Margin", table_col_carrier: "Carrier", table_col_status: "Status", table_col_actions: "Actions",
     radar_title: "Tender Radar", radar_subtitle: "Mass Broadcast System", radar_select_label: "Select Pending Order", radar_btn_start: "Initiate Tender Broadcast", radar_scanning: "Scanning for carriers...", radar_tender_complete: "Tender Complete", radar_tender_desc: "Best bid secured for order.", radar_bid_amount: "Bid Amount:", radar_est_margin: "Est. Margin:", btn_reject: "Reject", btn_accept: "Accept & Assign",
     ai_subtitle: "AI Logistics Assistant", ai_name: "System AI", ai_welcome: "Greetings, Vlad. I am your logistics intelligence matrix. I can optimize routes, predict border delays, and draft driver instructions. How can I assist you today?", ai_quick_1: "Optimize Routes", ai_quick_2: "Border Queues", ai_input_placeholder: "Message Copilot...",
     modal_new_order_title: "New Order", modal_from: "From", modal_to: "To", modal_cargo_details: "Cargo Details", modal_transport_type: "Transport Type", modal_client_budget: "Client Budget (€)", modal_carrier_rate: "Est. Carrier Rate (€)", modal_est_margin: "Est. Margin", modal_profitability: "Profitability", btn_cancel: "Cancel", btn_create_order: "Create Order",
@@ -99,7 +103,11 @@ const i18n = {
     btn_track: "Track",
     carrier_free: "Available", carrier_busy: "Busy",
     reliability: "Reliability", rating: "Rating",
-    msg_gps: "GPS sync successful.", msg_border: "Checking border queues at Krakovets.", msg_rates: "Carrier rates updated.", msg_tel: "Telemetry check: Nominal."
+    msg_gps: "GPS Sync OK.", msg_border: "Checking border queues (Krakovets).", msg_rates: "Carrier rates updated.", msg_tel: "Telemetry: Nominal.",
+    nav_heatmap: "Local-for-Local",
+    tooltip_nav_radar: "Automatically finds carriers and selects the bid with max margin.",
+    tooltip_nav_heatmap: "Analyzes the market for transport shortages or oversupply in different regions.",
+    tooltip_nav_copilot: "Smart agent. Optimizes routes and autonomously resolves logistics crises."
   }
 };
 
@@ -157,12 +165,12 @@ function generateRoutePoints(start, end, steps = 100) {
 }
 
 let trips = [
-  { id: 'TR-101', from: 'Kyiv, UA', to: 'Warsaw, PL', cargo: 'Meds (Thermo)', type: 'Рефрижератор (Термо)', priceClient: 2450, priceCarrier: 2050, carrier: 'EuroTrans UA', status: 'active', routePoints: generateRoutePoints(cities.kyiv, cities.warsaw, 150), currentPointIndex: 45, temp: 3.8 },
-  { id: 'TR-102', from: 'Lviv, UA', to: 'Berlin, DE', cargo: 'Electronics, 12t', type: 'Зіп-Тент', priceClient: 3200, priceCarrier: 2700, carrier: 'West-East Logistics', status: 'active', routePoints: generateRoutePoints(cities.lviv, cities.berlin, 200), currentPointIndex: 110, temp: null },
-  { id: 'TR-103', from: 'Dnipro, UA', to: 'Katowice, PL', cargo: 'Steel Pipes, 22t', type: 'Тент', priceClient: 2100, priceCarrier: 1800, carrier: 'Shvydka Dostavka', status: 'active', routePoints: generateRoutePoints(cities.dnipro, cities.katowice, 180), currentPointIndex: 20, temp: null },
-  { id: 'TR-104', from: 'Odessa, UA', to: 'Constanta, RO', cargo: 'Grain, 20t', type: 'Тент', priceClient: 1650, priceCarrier: 1350, carrier: 'OdessaTrans Group', status: 'delivered', routePoints: generateRoutePoints(cities.odessa, cities.constanta, 80), currentPointIndex: 80, temp: null },
-  { id: 'CRG-201', from: 'Lviv, UA', to: 'Warsaw, PL', cargo: 'Frozen Food', type: 'Рефрижератор (Термо)', priceClient: 1800, priceCarrier: null, carrier: '---', status: 'pending', routePoints: generateRoutePoints(cities.lviv, cities.warsaw, 120), currentPointIndex: 0, temp: 4.0 },
-  { id: 'CRG-202', from: 'Kyiv, UA', to: 'Prague, CZ', cargo: 'Cosmetics, 8t', type: 'Тент', priceClient: 2900, priceCarrier: null, carrier: '---', status: 'pending', routePoints: generateRoutePoints(cities.kyiv, cities.berlin, 120), currentPointIndex: 0, temp: null }
+  { id: 'TR-101', from: 'Київ, UA', to: 'Варшава, PL', cargo: 'Meds (Thermo)', type: 'Рефрижератор (Термо)', priceClient: 2450, priceCarrier: 2050, carrier: 'EuroTrans UA', status: 'active', routePoints: generateRoutePoints(cities.kyiv, cities.warsaw, 150), currentPointIndex: 45, temp: 3.8 },
+  { id: 'TR-102', from: 'Львів, UA', to: 'Берлін, DE', cargo: 'Electronics, 12t', type: 'Зіп-Тент', priceClient: 3200, priceCarrier: 2700, carrier: 'West-East Logistics', status: 'active', routePoints: generateRoutePoints(cities.lviv, cities.berlin, 200), currentPointIndex: 110, temp: null },
+  { id: 'TR-103', from: 'Дніпро, UA', to: 'Катовіце, PL', cargo: 'Steel Pipes, 22t', type: 'Тент', priceClient: 2100, priceCarrier: 1800, carrier: 'Shvydka Dostavka', status: 'active', routePoints: generateRoutePoints(cities.dnipro, cities.katowice, 180), currentPointIndex: 20, temp: null },
+  { id: 'TR-104', from: 'Одеса, UA', to: 'Констанца, RO', cargo: 'Grain, 20t', type: 'Тент', priceClient: 1650, priceCarrier: 1350, carrier: 'OdessaTrans Group', status: 'delivered', routePoints: generateRoutePoints(cities.odessa, cities.constanta, 80), currentPointIndex: 80, temp: null },
+  { id: 'CRG-201', from: 'Львів, UA', to: 'Варшава, PL', cargo: 'Frozen Food', type: 'Рефрижератор (Термо)', priceClient: 1800, priceCarrier: null, carrier: '---', status: 'pending', routePoints: generateRoutePoints(cities.lviv, cities.warsaw, 120), currentPointIndex: 0, temp: 4.0 },
+  { id: 'CRG-202', from: 'Київ, UA', to: 'Прага, CZ', cargo: 'Cosmetics, 8t', type: 'Тент', priceClient: 2900, priceCarrier: null, carrier: '---', status: 'pending', routePoints: generateRoutePoints(cities.kyiv, cities.berlin, 120), currentPointIndex: 0, temp: null }
 ];
 
 let carriers = [
@@ -205,6 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Radar Panel
   document.getElementById('btn-toggle-radar').addEventListener('click', () => togglePanel('panel-radar'));
+  const btnHeatmap = document.getElementById('btn-toggle-heatmap');
+  if(btnHeatmap) btnHeatmap.addEventListener('click', toggleHeatmap);
+
   // Copilot Panel
   const btnCopilot = document.getElementById('btn-toggle-copilot');
   if(btnCopilot) btnCopilot.addEventListener('click', () => togglePanel('panel-copilot'));
@@ -513,6 +524,129 @@ function initMap() {
   trips.forEach(trip => { if (trip.status === 'active') plotTripOnMap(trip); });
 }
 
+// =====================================
+// HEATMAP: Local-for-Local Supply Chain
+// =====================================
+let isHeatmapActive = false;
+let heatmapLayerGroup = null;
+
+function createHeatmapNode(lat, lng, radius, color, intensity) {
+    return L.circle([lat, lng], {
+        radius: radius,
+        color: color,
+        fillColor: color,
+        fillOpacity: intensity,
+        stroke: false,
+        className: 'heatmap-blur'
+    });
+}
+
+function initHeatmap() {
+    heatmapLayerGroup = L.layerGroup([
+        // Germany (High Demand / Red)
+        createHeatmapNode(51.16, 10.45, 120000, '#ef4444', 0.8), 
+        createHeatmapNode(50.11, 8.68, 80000, '#ef4444', 0.9),
+        createHeatmapNode(52.52, 13.40, 100000, '#ef4444', 0.7),
+        // Poland (Medium Demand / Yellow)
+        createHeatmapNode(52.22, 21.01, 150000, '#eab308', 0.6),
+        // Ukraine (Oversupply / Blue)
+        createHeatmapNode(49.83, 24.02, 90000, '#3b82f6', 0.8),
+        createHeatmapNode(50.45, 30.52, 130000, '#3b82f6', 0.7),
+    ]);
+}
+
+window.toggleHeatmap = function() {
+    isHeatmapActive = !isHeatmapActive;
+    const btn = document.getElementById('btn-toggle-heatmap');
+    const mapEl = document.getElementById('leaflet-map');
+    
+    if (isHeatmapActive) {
+        if (!heatmapLayerGroup) initHeatmap();
+        map.addLayer(heatmapLayerGroup);
+        btn.classList.add('bg-white/10', 'text-white');
+        btn.classList.remove('text-gray-400');
+        
+        // Add dark contrast to make colors pop
+        mapEl.style.transition = "filter 0.5s ease";
+        mapEl.style.filter = "contrast(1.1) saturate(1.5) brightness(0.9)";
+        
+        addTerminalLog("Local-for-Local Heatmap activated: Scanning regional capacity.");
+        
+        // 2026 Trend: Agentic AI proactively reaches out
+        setTimeout(() => {
+            const msg = currentLang === 'uk' 
+                ? `Аналіз Попиту завершено ✅<br><br>Я виявив дефіцит провізних ємностей в Німеччині "🟥 зона"<br><br>У нас є 2 Вільні траки в сусідньому регіоні.<br>Можу перемістити їх туди для максимізації прибутку<br>( Очікуваний профіт +€450 )` 
+                : "Local-for-Local scan complete. I detected a capacity shortage in Germany (Red zone). We have 2 empty trucks nearby. Reposition them to maximize profit (Est. +€450)?";
+            
+            const actionHtml = `<button onclick="this.innerHTML='<span class=\\'material-symbols-outlined text-[14px]\\'>check</span> Виконано'; this.classList.remove('bg-pink-500', 'hover:bg-pink-600'); this.classList.add('bg-emerald-500'); executeRepositioning(); setTimeout(()=>togglePanel('panel-copilot'), 1500);" class="mt-3 bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-pink-600 transition-colors w-full flex justify-center items-center gap-2"><span class="material-symbols-outlined text-[14px]">my_location</span> ${currentLang === 'uk' ? 'Підтвердити переміщення' : 'Confirm Repositioning'}</button>`;
+            
+            // Open copilot panel if closed to show proactivity
+            const copilotPanel = document.getElementById('panel-copilot');
+            if(copilotPanel && copilotPanel.classList.contains('closed')) {
+                togglePanel('panel-copilot');
+            }
+            
+            showTypingIndicator();
+            setTimeout(() => {
+                removeTypingIndicator();
+                addChatMessage(msg, false, actionHtml);
+            }, 800);
+            
+        }, 1200);
+
+    } else {
+        if (heatmapLayerGroup) map.removeLayer(heatmapLayerGroup);
+        btn.classList.remove('bg-white/10', 'text-white');
+        btn.classList.add('text-gray-400');
+        mapEl.style.filter = "none";
+        addTerminalLog("Heatmap deactivated.");
+    }
+}
+
+window.executeRepositioning = async function() {
+    // Prevent double execution
+    if (trips.some(t => t.id === 'REP-777')) return;
+
+    let finalRoutePoints = [];
+    try {
+        const res = await fetch('https://router.project-osrm.org/route/v1/driving/21.0122,52.2297;8.6821,50.1109?overview=full&geometries=geojson');
+        const data = await res.json();
+        const coords = data.routes[0].geometry.coordinates; // [lng, lat]
+        const step = Math.max(1, Math.floor(coords.length / 150)); // Target ~150 points for realistic speed
+        for (let i = 0; i < coords.length; i += step) {
+            finalRoutePoints.push([coords[i][1], coords[i][0]]);
+        }
+        finalRoutePoints.push([50.1109, 8.6821]);
+    } catch(e) {
+        if (typeof generateRoutePoints === 'function') {
+            finalRoutePoints = generateRoutePoints([52.2297, 21.0122], [50.1109, 8.6821], 150);
+        } else {
+            finalRoutePoints = [[52.2297, 21.0122], [50.1109, 8.6821]];
+        }
+    }
+
+    const repoTrip = {
+        id: 'REP-777',
+        routePoints: finalRoutePoints,
+        from: currentLang === 'uk' ? "Варшава, Польща" : "Warsaw, Poland",
+        to: currentLang === 'uk' ? "Франкфурт, Німеччина" : "Frankfurt, Germany",
+        cargo: currentLang === 'uk' ? "Репозиціонування (Пустий)" : "Repositioning (Empty)",
+        type: "Тент 20т",
+        priceClient: 450, // Expected profit added
+        priceCarrier: 0,
+        status: 'active',
+        currentPointIndex: 0,
+        carrier: "Власний Автопарк",
+        isNew: true
+    };
+    
+    trips.unshift(repoTrip);
+    plotTripOnMap(repoTrip);
+    renderTripsTable();
+    updateKPIs();
+    addTerminalLog(`AI Agent initiated repositioning: ${repoTrip.id} (Warsaw -> Frankfurt). Expected profit: +€450.`);
+}
+
 function plotTripOnMap(trip) {
   const isReefer = trip.type.includes('Рефрижератор');
   const pathColor = isReefer ? '#006d35' : '#000000';
@@ -572,7 +706,7 @@ function startTruckMovements() {
   truckMovementInterval = setInterval(() => {
     trips.forEach(trip => {
       if (trip.status === 'active' && trip.routePoints && trip.routePoints.length > 0) {
-        trip.currentPointIndex += 1;
+        trip.currentPointIndex += (trip.id === 'REP-777' ? 12 : 1);
         if (trip.currentPointIndex >= trip.routePoints.length) {
           trip.status = 'delivered';
           trip.currentPointIndex = trip.routePoints.length - 1;
@@ -594,8 +728,8 @@ function startTruckMovements() {
                 setTimeout(() => {
                     removeTypingIndicator();
                     const alertMsg = currentLang === 'uk'
-                        ? `⚠️ **Увага!** Вантажівка по рейсу **${trip.id}** щойно успішно прибула. Загальний дохід оновлено.`
-                        : `⚠️ **Alert!** Truck for trip **${trip.id}** has successfully arrived. Total revenue updated.`;
+                        ? `✅ Готово Сер.<br>Вантажівка по рейсу ( ${trip.id} ) дісталася місця призначення. Загальний дохід оновлено.`
+                        : `✅ **Success!** Truck for trip **${trip.id}** has safely reached its destination. Total revenue updated, client is satisfied.`;
                     addChatMessage(alertMsg, false);
                 }, 1500);
             }
@@ -934,7 +1068,7 @@ function generateContextAwareGreeting() {
     const pendingCount = trips.filter(t => t.status === 'pending').length;
     if (pendingCount > 0) {
       const text = currentLang === 'uk' 
-        ? `Вітаю! Я помітив, що у вас **${pendingCount} рейсів** очікують на призначення. Бажаєте, я запущу для них Тендерний Радар?`
+        ? `Сер. <br>Помітив, що у вас ( ${pendingCount} рейси ) очікують на призначення. <br>Бажаєте, я запущу для них Тендерний Радар?`
         : `Hello! I noticed you have **${pendingCount} trips** waiting for assignment. Shall I launch the Tender Radar for them?`;
       addChatMessage(text, false, `<button onclick="togglePanel('panel-radar')" class="mt-3 bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-indigo-600 transition-colors w-full flex justify-center items-center gap-2"><span class="material-symbols-outlined text-[14px]">radar</span> ${currentLang === 'uk' ? 'Відкрити Радар' : 'Open Radar'}</button>`);
     } else {
