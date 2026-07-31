@@ -103,6 +103,10 @@
                 <span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="groups">groups</span>
                 <span class="font-body text-sm font-semibold" data-i18n="nav_carriers">База Перевізників</span>
             </a>
+            <a href="#" class="nav-btn flex items-center gap-4 px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group" data-target="view-inventory">
+                <span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="inventory_2">inventory_2</span>
+                <span class="font-body text-sm font-semibold" data-i18n="nav_inventory">Складські залишки</span>
+            </a>
             <div class="my-6 border-t border-white/10 mx-4"></div>
             <a href="#" id="btn-toggle-radar" class="flex flex-col px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group">
                 <div class="flex items-center gap-4 w-full">
@@ -397,6 +401,74 @@
                 <h2 class="text-2xl font-headline font-bold text-primary mb-6" data-i18n="nav_carriers">База Перевізників</h2>
                 <div class="grid grid-cols-3 gap-6" id="carriers-grid-container">
                     <!-- Cards injected here -->
+                </div>
+            </div>
+
+            <!-- VIEW: INVENTORY (Hidden by default) -->
+            <div id="view-inventory" class="spa-view hidden max-w-[1600px] mx-auto w-full">
+                <h2 class="text-2xl font-headline font-bold text-primary mb-6" data-i18n="view_title_inventory">Склад</h2>
+                
+                <!-- KPIs -->
+                <div class="grid grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1" data-i18n="inv_total_items">Всього товарів</p>
+                            <p class="text-2xl font-black font-headline text-gray-800" id="inv-kpi-items">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined">category</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1" data-i18n="inv_skus">Кількість SKU</p>
+                            <p class="text-2xl font-black font-headline text-gray-800" id="inv-kpi-skus">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined">warning</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1" data-i18n="inv_alerts">Дефіцит</p>
+                            <p class="text-2xl font-black font-headline text-gray-800" id="inv-kpi-alerts">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined">warehouse</span>
+                        </div>
+                        <div class="w-full">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1" data-i18n="inv_capacity">Заповненість складу</p>
+                            <div class="w-full bg-gray-100 rounded-full h-2.5 mt-2">
+                                <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">SKU</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Найменування</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Категорія</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Локація</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Залишок</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body" class="divide-y divide-gray-50">
+                                <!-- Rendered via JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             

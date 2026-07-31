@@ -49,6 +49,7 @@ const i18n = {
     nav_subtitle: "TMS Нового Покоління", nav_dashboard: "Дашборд", nav_trips: "Рейси та Замовлення", nav_carriers: "База Перевізників",
     nav_radar: "Тендерний Радар", nav_copilot: "AI Асистент", nav_system_active: "Система Активна", view_title_dashboard: "Дашборд",
     btn_new_order: "Нове Замовлення", btn_export_excel: "Експорт в Excel",
+    nav_inventory: "Складські залишки", inv_total_items: "Всього товарів", inv_skus: "Кількість SKU", inv_alerts: "Дефіцит", inv_capacity: "Заповненість складу", view_title_inventory: "Склад",
     kpi_revenue: "Загальний дохід (Місяць)", kpi_active_trips: "Активні Рейси", kpi_avg_margin: "Середня Маржа (%)", kpi_reliability: "КРІ Надійності",
     kpi_optimal: "Оптимально", kpi_no_delays: "Без запізнень", kpi_trips_pending: "очікують",
     tooltip_revenue: "Сума доходів від усіх доставлених та активних рейсів.",
@@ -81,6 +82,7 @@ const i18n = {
     nav_subtitle: "Next-Gen TMS", nav_dashboard: "Dashboard", nav_trips: "Trips & Orders", nav_carriers: "Carriers Base",
     nav_radar: "Tender Radar", nav_copilot: "AI Copilot", nav_system_active: "System Active", view_title_dashboard: "Dashboard",
     btn_new_order: "New Order", btn_export_excel: "Export to Excel",
+    nav_inventory: "Inventory", inv_total_items: "Total Items", inv_skus: "Total SKUs", inv_alerts: "Alerts", inv_capacity: "Warehouse Capacity", view_title_inventory: "Inventory Dashboard",
     kpi_revenue: "Total Revenue (Month)", kpi_active_trips: "Active Trips", kpi_avg_margin: "Avg Margin (%)", kpi_reliability: "Reliability KPI",
     kpi_optimal: "Optimal", kpi_no_delays: "No critical delays", kpi_trips_pending: "pending",
     tooltip_revenue: "Sum of revenue from all delivered and active trips.",
@@ -1369,6 +1371,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportBtn = document.getElementById('btn-export-excel');
     if (exportBtn) {
         exportBtn.addEventListener('click', exportTripsToExcel);
+    }
+});
+
+
+// ==========================================================================
+// INVENTORY DASHBOARD (WMS Module)
+// ==========================================================================
+
+const inventoryItems = [
+    { sku: 'EU-PL-1001', name: 'Автомобільні шини Michelin', category: 'Автозапчастини', location: 'Склад А (Київ)', stock: 450, status: 'good' },
+    { sku: 'EU-DE-2042', name: 'Електроніка (Телевізори)', category: 'Техніка', location: 'Склад B (Львів)', stock: 12, status: 'low' },
+    { sku: 'EU-FR-3091', name: 'Медичне обладнання', category: 'Медицина', location: 'Склад C (Варшава)', stock: 0, status: 'out' },
+    { sku: 'EU-PL-1055', name: 'Моторне мастило 5W-30', category: 'Автозапчастини', location: 'Склад А (Київ)', stock: 1200, status: 'good' },
+    { sku: 'EU-IT-4011', name: 'Італійські меблі (Дивани)', category: 'Меблі', location: 'Склад B (Львів)', stock: 5, status: 'low' }
+];
+
+function renderInventory() {
+    const tableBody = document.getElementById('inventory-table-body');
+    if (!tableBody) return;
+    tableBody.innerHTML = '';
+
+    let totalItems = 0;
+    let totalSKUs = inventoryItems.length;
+    let alerts = 0;
+
+    inventoryItems.forEach(item => {
+        totalItems += item.stock;
+        if (item.status === 'low' || item.status === 'out') alerts++;
+
+        let statusBadge = '';
+        if (item.status === 'good') {
+            statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">${currentLang === 'uk' ? 'В наявності' : 'In Stock'}</span>`;
+        } else if (item.status === 'low') {
+            statusBadge = `<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold">${currentLang === 'uk' ? 'Закінчується' : 'Low Stock'}</span>`;
+        } else if (item.status === 'out') {
+            statusBadge = `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">${currentLang === 'uk' ? 'Немає' : 'Out of Stock'}</span>`;
+        }
+
+        const row = `
+            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <td class="p-4 font-bold text-gray-800 text-sm">${item.sku}</td>
+                <td class="p-4 text-sm text-gray-600">${item.name}</td>
+                <td class="p-4 text-sm text-gray-600">${item.category}</td>
+                <td class="p-4 text-sm text-gray-600">${item.location}</td>
+                <td class="p-4 font-bold ${item.stock === 0 ? 'text-red-500' : 'text-gray-800'} text-sm">${item.stock}</td>
+                <td class="p-4">${statusBadge}</td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+
+    // Update KPIs
+    const elItems = document.getElementById('inv-kpi-items');
+    const elSkus = document.getElementById('inv-kpi-skus');
+    const elAlerts = document.getElementById('inv-kpi-alerts');
+    
+    if (elItems) elItems.textContent = totalItems.toLocaleString();
+    if (elSkus) elSkus.textContent = totalSKUs;
+    if (elAlerts) {
+        elAlerts.textContent = alerts;
+        if (alerts > 0) elAlerts.classList.add('text-red-500');
+    }
+}
+
+// Ensure it runs on first load if inventory view is active or globally
+document.addEventListener('DOMContentLoaded', () => {
+    // Add logic to call renderInventory when clicking on inventory tab
+    const invBtn = document.querySelector('.nav-btn[data-target="view-inventory"]');
+    if (invBtn) {
+        invBtn.addEventListener('click', () => {
+            renderInventory();
+        });
     }
 });
 
