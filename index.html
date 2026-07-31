@@ -486,14 +486,20 @@
                 <div class="grid grid-cols-2 gap-8">
                     <!-- Inputs -->
                     <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8">
-                        <div class="space-y-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_distance">Дистанція (км)</label>
+                                <input type="number" id="wi-distance" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-lg font-bold text-gray-800 focus:ring-2 focus:ring-primary outline-none transition-shadow" value="1000" step="50">
+                            </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_client_rate">Ставка Клієнта (€)</label>
                                 <input type="number" id="wi-client-rate" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-lg font-bold text-gray-800 focus:ring-2 focus:ring-primary outline-none transition-shadow" value="1200" step="50">
+                                <div class="text-right text-xs text-gray-400 mt-1 font-semibold">~ <span id="wi-client-km">1.20</span> €/km</div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_carrier_rate">Ставка Перевізника (€)</label>
                                 <input type="number" id="wi-carrier-rate" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-lg font-bold text-gray-800 focus:ring-2 focus:ring-primary outline-none transition-shadow" value="900" step="50">
+                                <div class="text-right text-xs text-gray-400 mt-1 font-semibold">~ <span id="wi-carrier-km">0.90</span> €/km</div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_extra_costs">Додаткові витрати (€)</label>
@@ -503,21 +509,44 @@
                     </div>
 
                     <!-- Results -->
-                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8 flex flex-col justify-center relative overflow-hidden">
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8 relative overflow-hidden flex flex-col justify-between">
                         <div class="absolute top-0 left-0 w-full h-2 bg-gray-100" id="wi-progress-bg">
                             <div class="h-full bg-emerald-500 transition-all duration-500" id="wi-progress-bar" style="width: 0%"></div>
                         </div>
                         
-                        <div class="mb-8 mt-4 text-center">
-                            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2" data-i18n="wi_profit">Чистий Прибуток</p>
-                            <p class="text-6xl font-black font-headline text-gray-800 tracking-tighter" id="wi-profit-val">€0</p>
+                        <div class="flex items-center gap-8 mt-4 mb-6">
+                            <!-- Donut Chart -->
+                            <div class="relative w-32 h-32 shrink-0 rounded-full flex items-center justify-center shadow-inner" id="wi-donut-chart" style="background: conic-gradient(#3b82f6 0% 75%, #f59e0b 75% 85%, #10b981 85% 100%);">
+                                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center z-10 shadow-sm">
+                                    <span class="material-symbols-outlined text-gray-300 text-3xl transition-colors" id="wi-donut-icon">pie_chart</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Profit & Margin -->
+                            <div class="flex-grow text-right">
+                                <div class="mb-4">
+                                    <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1" data-i18n="wi_profit">Чистий Прибуток</p>
+                                    <p class="text-5xl font-black font-headline text-gray-800 tracking-tighter transition-colors" id="wi-profit-val">€0</p>
+                                </div>
+                                
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1" data-i18n="wi_margin">Маржинальність</p>
+                                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-50 border border-gray-100 transition-colors" id="wi-margin-badge">
+                                        <span class="material-symbols-outlined text-gray-400 text-sm transition-colors" id="wi-margin-icon">analytics</span>
+                                        <span class="text-xl font-black font-headline text-gray-800 transition-colors" id="wi-margin-val">0%</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="text-center">
-                            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2" data-i18n="wi_margin">Маржинальність</p>
-                            <div class="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gray-50 border border-gray-100" id="wi-margin-badge">
-                                <span class="material-symbols-outlined text-gray-400" id="wi-margin-icon">analytics</span>
-                                <span class="text-3xl font-black font-headline text-gray-800" id="wi-margin-val">0%</span>
+
+                        <!-- AI Forecast -->
+                        <div class="bg-gray-50 rounded-2xl p-4 flex items-center gap-4 border border-gray-100 transition-colors" id="wi-ai-card">
+                            <div class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-gray-400 transition-colors" id="wi-ai-icon">smart_toy</span>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest" data-i18n="wi_ai_forecast">AI Прогноз</p>
+                                <p class="text-sm font-bold text-gray-600 transition-colors" id="wi-ai-text">...</p>
                             </div>
                         </div>
                     </div>
