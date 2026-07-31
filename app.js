@@ -51,7 +51,7 @@ const i18n = {
     btn_new_order: "Нове Замовлення", btn_export_excel: "Експорт в Excel",
     nav_inventory: "Складські залишки", inv_total_items: "Всього товарів", inv_skus: "Кількість SKU", inv_alerts: "Дефіцит", inv_capacity: "Заповненість складу", view_title_inventory: "Склад",
     nav_whatif: "Калькулятор Маржі", wi_client_rate: "Ставка Клієнта (€)", wi_carrier_rate: "Ставка Перевізника (€)", wi_extra_costs: "Дод. витрати (€)", wi_profit: "Чистий Прибуток", wi_margin: "Маржинальність",
-    wi_distance: "Дистанція (км)", wi_ai_forecast: "AI Прогноз", wi_prob_low: "Низька ймовірність (Дорого)", wi_prob_optimal: "Оптимальна ймовірність", wi_prob_high: "Висока ймовірність (Дешево)",
+    wi_distance: "Дистанція (км)", wi_ai_forecast: "AI Прогноз", wi_prob_low: "Зависока маржа знижує ваші шанси. Клієнт може обрати дешевшого конкурента.", wi_prob_optimal: "Ідеальний баланс. Ставка приваблива для клієнта, а ви отримуєте хороший прибуток.", wi_prob_high: "Високий шанс виграшу через низьку ціну, але маржинальність може не покрити ризики.", wi_prob_loss: "Увага! Розрахунок призводить до збитків. Перегляньте ставки або скоротіть витрати.",
     kpi_revenue: "Загальний дохід (Місяць)", kpi_active_trips: "Активні Рейси", kpi_avg_margin: "Середня Маржа (%)", kpi_reliability: "КРІ Надійності",
     kpi_optimal: "Оптимально", kpi_no_delays: "Без запізнень", kpi_trips_pending: "очікують",
     tooltip_revenue: "Сума доходів від усіх доставлених та активних рейсів.",
@@ -86,7 +86,7 @@ const i18n = {
     btn_new_order: "New Order", btn_export_excel: "Export to Excel",
     nav_inventory: "Inventory", inv_total_items: "Total Items", inv_skus: "Total SKUs", inv_alerts: "Alerts", inv_capacity: "Warehouse Capacity", view_title_inventory: "Inventory Dashboard",
     nav_whatif: "Margin Calculator", wi_client_rate: "Client Rate (€)", wi_carrier_rate: "Carrier Rate (€)", wi_extra_costs: "Extra Costs (€)", wi_profit: "Net Profit", wi_margin: "Margin",
-    wi_distance: "Distance (km)", wi_ai_forecast: "AI Forecast", wi_prob_low: "Low Win Prob. (Expensive)", wi_prob_optimal: "Optimal Win Prob.", wi_prob_high: "High Win Prob. (Cheap)",
+    wi_distance: "Distance (km)", wi_ai_forecast: "AI Forecast", wi_prob_low: "Margin is too high. The client may choose a cheaper competitor.", wi_prob_optimal: "Perfect balance. The rate is attractive to the client, while maintaining healthy profit.", wi_prob_high: "High win probability, but margin might not cover operational risks.", wi_prob_loss: "Warning! This leads to a loss. Please review rates or reduce costs.",
     kpi_revenue: "Total Revenue (Month)", kpi_active_trips: "Active Trips", kpi_avg_margin: "Avg Margin (%)", kpi_reliability: "Reliability KPI",
     kpi_optimal: "Optimal", kpi_no_delays: "No critical delays", kpi_trips_pending: "pending",
     tooltip_revenue: "Sum of revenue from all delivered and active trips.",
@@ -1526,11 +1526,12 @@ function initWhatIfCalculator() {
         if (elAiCard) elAiCard.className = 'bg-gray-50 rounded-2xl p-4 flex items-center gap-4 border transition-colors';
         
         const locLang = window.currentLang || 'uk';
-        const i18nDict = window.translations ? window.translations[locLang] : {};
+        const i18nDict = (typeof i18n !== 'undefined' ? i18n[locLang] : {}) || {};
 
         const txtLow = i18nDict['wi_prob_low'] || 'Low';
         const txtOptimal = i18nDict['wi_prob_optimal'] || 'Optimal';
         const txtHigh = i18nDict['wi_prob_high'] || 'High';
+        const txtLoss = i18nDict['wi_prob_loss'] || 'Loss';
 
         if (marginP >= 20) {
             elMarginBadge.classList.add('bg-emerald-50', 'border-emerald-200');
@@ -1542,8 +1543,8 @@ function initWhatIfCalculator() {
             
             if (elAiCard) {
                 elAiCard.classList.add('bg-blue-50', 'border-blue-100');
-                elAiIcon.className = 'material-symbols-outlined text-blue-500 transition-colors';
-                elAiText.className = 'text-sm font-bold text-blue-700 transition-colors';
+                elAiIcon.className = 'material-symbols-outlined text-blue-500 transition-colors shrink-0';
+                elAiText.className = 'text-xs font-medium text-blue-700 transition-colors leading-tight';
                 elAiText.textContent = txtLow;
                 elAiIcon.textContent = 'sentiment_dissatisfied';
             }
@@ -1557,8 +1558,8 @@ function initWhatIfCalculator() {
 
             if (elAiCard) {
                 elAiCard.classList.add('bg-emerald-50', 'border-emerald-100');
-                elAiIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors';
-                elAiText.className = 'text-sm font-bold text-emerald-700 transition-colors';
+                elAiIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors shrink-0';
+                elAiText.className = 'text-xs font-medium text-emerald-700 transition-colors leading-tight';
                 elAiText.textContent = txtOptimal;
                 elAiIcon.textContent = 'sentiment_very_satisfied';
             }
@@ -1572,8 +1573,8 @@ function initWhatIfCalculator() {
             
             if (elAiCard) {
                 elAiCard.classList.add('bg-amber-50', 'border-amber-100');
-                elAiIcon.className = 'material-symbols-outlined text-amber-500 transition-colors';
-                elAiText.className = 'text-sm font-bold text-amber-700 transition-colors';
+                elAiIcon.className = 'material-symbols-outlined text-amber-500 transition-colors shrink-0';
+                elAiText.className = 'text-xs font-medium text-amber-700 transition-colors leading-tight';
                 elAiText.textContent = txtHigh;
                 elAiIcon.textContent = 'sentiment_satisfied';
             }
@@ -1587,9 +1588,9 @@ function initWhatIfCalculator() {
 
             if (elAiCard) {
                 elAiCard.classList.add('bg-red-50', 'border-red-100');
-                elAiIcon.className = 'material-symbols-outlined text-red-500 transition-colors';
-                elAiText.className = 'text-sm font-bold text-red-700 transition-colors';
-                elAiText.textContent = locLang === 'uk' ? 'Збитковий рейс' : 'Loss-making trip';
+                elAiIcon.className = 'material-symbols-outlined text-red-500 transition-colors shrink-0';
+                elAiText.className = 'text-xs font-medium text-red-700 transition-colors leading-tight';
+                elAiText.textContent = txtLoss;
                 elAiIcon.textContent = 'warning';
             }
         }
