@@ -1143,3 +1143,232 @@ function addChatMessage(text, isUser, actionHtml = '') {
   box.appendChild(msg);
   box.scrollTop = box.scrollHeight;
 }
+
+// ==========================================
+// Excel Export Functionality (ExcelJS)
+// ==========================================
+async function exportTripsToExcel() {
+    if (!trips || trips.length === 0) {
+        alert("Немає даних для експорту.");
+        return;
+    }
+
+    try {
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'Logistics Pro TMS';
+        workbook.lastModifiedBy = 'Logistics Pro TMS';
+        workbook.created = new Date();
+        workbook.modified = new Date();
+
+        // ---------------------------------------------------------
+        // 1. DASHBOARD SHEET (WOW Effect)
+        // ---------------------------------------------------------
+        const dashSheet = workbook.addWorksheet('Дашборд');
+
+        // Calculate KPIs
+        let totalRevenue = 0;
+        let totalCarrierCost = 0;
+        let totalMargin = 0;
+        let activeTripsCount = 0;
+        let deliveredTripsCount = 0;
+
+        trips.forEach(t => {
+            if (t.priceClient) totalRevenue += t.priceClient;
+            if (t.priceCarrier) totalCarrierCost += t.priceCarrier;
+            if (t.status === 'active') activeTripsCount++;
+            if (t.status === 'delivered') deliveredTripsCount++;
+        });
+        totalMargin = totalRevenue - totalCarrierCost;
+        let avgMarginPercent = totalRevenue > 0 ? (totalMargin / totalRevenue) : 0;
+
+        // Styling for Dashboard
+        dashSheet.columns = [
+            { width: 5 }, { width: 35 }, { width: 20 }, { width: 5 }, { width: 35 }, { width: 20 }
+        ];
+
+        // Title
+        dashSheet.mergeCells('B2:F3');
+        const titleCell = dashSheet.getCell('B2');
+        titleCell.value = 'ЛОГІСТИЧНИЙ ДАШБОРД';
+        titleCell.font = { name: 'Arial Black', size: 24, color: { argb: 'FF0F172A' } };
+        titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF808080' } };
+        titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        // Subtitle
+        dashSheet.mergeCells('B4:F4');
+        const subtitleCell = dashSheet.getCell('B4');
+        subtitleCell.value = `Згенеровано: ${new Date().toLocaleString('uk-UA')}`;
+        subtitleCell.font = { name: 'Arial', size: 11, italic: true, color: { argb: 'FF64748B' } };
+        subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        // KPI Box 1: Revenue & Margin
+        dashSheet.getCell('B7').value = 'ФІНАНСОВІ ПОКАЗНИКИ';
+        dashSheet.getCell('B7').font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        dashSheet.getCell('B7').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        dashSheet.getCell('B7').alignment = { horizontal: 'center' };
+        dashSheet.mergeCells('B7:C7');
+
+        dashSheet.getCell('B8').value = 'Загальний Дохід:';
+        dashSheet.getCell('C8').value = totalRevenue;
+        dashSheet.getCell('C8').numFmt = '€#,##0.00';
+
+        dashSheet.getCell('B9').value = 'Витрати на перевізників:';
+        dashSheet.getCell('C9').value = totalCarrierCost;
+        dashSheet.getCell('C9').numFmt = '€#,##0.00';
+
+        dashSheet.getCell('B10').value = 'Чистий Прибуток (Маржа):';
+        dashSheet.getCell('C10').value = totalMargin;
+        dashSheet.getCell('C10').numFmt = '€#,##0.00';
+        dashSheet.getCell('C10').font = { bold: true, color: { argb: 'FF10B981' } };
+
+        dashSheet.getCell('B11').value = 'Середня Маржинальність:';
+        dashSheet.getCell('C11').value = avgMarginPercent;
+        dashSheet.getCell('C11').numFmt = '0.00%';
+        dashSheet.getCell('C11').font = { bold: true, color: { argb: 'FF10B981' } };
+        
+        ['B8','B9','B10','B11','C8','C9','C10','C11'].forEach(c => dashSheet.getCell(c).alignment = { vertical: 'middle', horizontal: 'center' });
+
+        // KPI Box 2: Operations
+        dashSheet.getCell('E7').value = 'ОПЕРАЦІЙНІ ПОКАЗНИКИ';
+        dashSheet.getCell('E7').font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        dashSheet.getCell('E7').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        dashSheet.getCell('E7').alignment = { horizontal: 'center' };
+        dashSheet.mergeCells('E7:F7');
+
+        dashSheet.getCell('E8').value = 'Всього рейсів у системі:';
+        dashSheet.getCell('F8').value = trips.length;
+
+        dashSheet.getCell('E9').value = 'Активні рейси (в дорозі):';
+        dashSheet.getCell('F9').value = activeTripsCount;
+        dashSheet.getCell('F9').font = { bold: true, color: { argb: 'FF3B82F6' } };
+
+        dashSheet.getCell('E10').value = 'Доставлені рейси:';
+        dashSheet.getCell('F10').value = deliveredTripsCount;
+        dashSheet.getCell('F10').font = { bold: true, color: { argb: 'FF10B981' } };
+        
+        ['E8','E9','E10','F8','F9','F10'].forEach(c => dashSheet.getCell(c).alignment = { vertical: 'middle', horizontal: 'center' });
+
+        // Add some borders to KPIs
+        ['B7','C7','E7','F7','B8','B9','B10','B11','C8','C9','C10','C11', 'E8','E9','E10','F8','F9','F10'].forEach(cell => {
+            dashSheet.getCell(cell).border = {
+                top: {style:'thin', color: {argb:'FF000000'}},
+                bottom: {style:'thin', color: {argb:'FF000000'}},
+                left: {style:'thin', color: {argb:'FF000000'}},
+                right: {style:'thin', color: {argb:'FF000000'}}
+            };
+        });
+
+        // ---------------------------------------------------------
+        // 2. DATA SHEET (Manifest)
+        // ---------------------------------------------------------
+        const dataSheet = workbook.addWorksheet('Дані рейсів');
+        
+        dataSheet.columns = [
+            { header: 'ID Рейсу', key: 'id', width: 15 },
+            { header: 'Звідки', key: 'from', width: 20 },
+            { header: 'Куди', key: 'to', width: 20 },
+            { header: 'Вантаж', key: 'cargo', width: 30 },
+            { header: 'Тип авто', key: 'type', width: 15 },
+            { header: 'Перевізник', key: 'carrier', width: 25 },
+            { header: 'Статус', key: 'status', width: 15 },
+            { header: 'Ставка Клієнта', key: 'priceClient', width: 18, style: { numFmt: '€#,##0.00' } },
+            { header: 'Ставка Перевізника', key: 'priceCarrier', width: 20, style: { numFmt: '€#,##0.00' } },
+            { header: 'Маржа (€)', key: 'marginE', width: 15, style: { numFmt: '€#,##0.00' } },
+            { header: 'Маржа (%)', key: 'marginP', width: 15, style: { numFmt: '0.00%' } }
+        ];
+
+        // Style the header row
+        dataSheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        dataSheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        dataSheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+        dataSheet.views = [{ state: 'frozen', ySplit: 1 }]; // Freeze top row
+
+        // Add rows
+        trips.forEach(trip => {
+            let marginE = 0;
+            let marginP = 0;
+            if (trip.priceClient && trip.priceCarrier) {
+                marginE = trip.priceClient - trip.priceCarrier;
+                marginP = trip.priceClient > 0 ? (marginE / trip.priceClient) : 0;
+            }
+
+            let translatedStatus = trip.status;
+            if (trip.status === 'active') translatedStatus = 'В дорозі';
+            if (trip.status === 'delivered') translatedStatus = 'Доставлено';
+            if (trip.status === 'pending') translatedStatus = 'Очікує';
+
+            const row = dataSheet.addRow({
+                id: trip.id,
+                from: trip.from,
+                to: trip.to,
+                cargo: trip.cargo,
+                type: trip.type,
+                carrier: trip.carrier,
+                status: translatedStatus,
+                priceClient: trip.priceClient || 0,
+                priceCarrier: trip.priceCarrier || 0,
+                marginE: marginE,
+                marginP: marginP
+            });
+
+            // Center all cells in the row
+            row.eachCell({ includeEmpty: true }, cell => {
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            });
+
+            // Color coding for status
+            const statusCell = row.getCell('status');
+            if (trip.status === 'active') {
+                statusCell.font = { color: { argb: 'FF2563EB' }, bold: true };
+            } else if (trip.status === 'delivered') {
+                statusCell.font = { color: { argb: 'FF059669' }, bold: true };
+            } else {
+                statusCell.font = { color: { argb: 'FFD97706' }, bold: true };
+            }
+
+            // Margin coloring (green if > 0)
+            const marginCell = row.getCell('marginE');
+            if (marginE > 0) {
+                marginCell.font = { color: { argb: 'FF059669' }, bold: true };
+                row.getCell('marginP').font = { color: { argb: 'FF059669' }, bold: true };
+            }
+        });
+
+        // Add alternating row colors for Manifest
+        dataSheet.eachRow((row, rowNumber) => {
+            if (rowNumber > 1) { // Skip header
+                if (rowNumber % 2 === 0) {
+                    row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+                }
+                // Add borders to all cells
+                row.eachCell({ includeEmpty: true }, (cell) => {
+                    cell.border = {
+                        top: {style:'thin', color: {argb:'FFE2E8F0'}},
+                        left: {style:'thin', color: {argb:'FFE2E8F0'}},
+                        bottom: {style:'thin', color: {argb:'FFE2E8F0'}},
+                        right: {style:'thin', color: {argb:'FFE2E8F0'}}
+                    };
+                });
+            }
+        });
+
+        // Generate and download Excel file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'TMS_Dashboard_Report.xlsx'); // Using FileSaver.js
+
+    } catch (err) {
+        console.error("Помилка генерації Excel:", err);
+        alert("Виникла помилка при генерації Excel.");
+    }
+}
+
+// Attach event listener on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Attempt to bind the button
+    const exportBtn = document.getElementById('btn-export-excel');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportTripsToExcel);
+    }
+});
+

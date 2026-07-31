@@ -12,6 +12,10 @@
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- ExcelJS and FileSaver -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -351,7 +355,10 @@
                             <p class="text-sm text-gray-500" data-i18n="table_trips_subtitle">Відстеження рейсів та показників ефективності в реальному часі</p>
                         </div>
                         <div class="flex gap-4">
-                            <button class="bg-gray-50 text-gray-700 font-semibold px-6 py-2.5 rounded-full border border-gray-200 hover:bg-gray-100 hover:shadow-sm transition-all" data-i18n="btn_cancel">Export CSV</button>
+                            <button id="btn-export-excel" class="bg-emerald-50 text-emerald-600 font-semibold px-6 py-2.5 rounded-full border border-emerald-200 hover:bg-emerald-500 hover:text-white hover:shadow-sm transition-all flex items-center gap-2" data-i18n="btn_export_excel">
+                                <span class="material-symbols-outlined text-[20px]">table_chart</span>
+                                Export to Excel
+                            </button>
                             <button id="btn-create-trip" class="bg-primary text-white font-semibold px-6 py-2.5 rounded-full shadow-md hover:bg-sidebarActive hover:-translate-y-0.5 transition-all flex items-center gap-2">
                                 <span class="material-symbols-outlined text-sm">add</span> <span data-i18n="btn_new_order">Add Driver</span>
                             </button>
