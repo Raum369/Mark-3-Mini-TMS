@@ -51,6 +51,7 @@ const i18n = {
     btn_new_order: "Нове Замовлення", btn_export_excel: "Експорт в Excel",
     nav_inventory: "Складські залишки", inv_total_items: "Всього товарів", inv_skus: "Кількість SKU", inv_alerts: "Дефіцит", inv_capacity: "Заповненість складу", view_title_inventory: "Склад",
     nav_whatif: "Калькулятор Маржі", wi_client_rate: "Ставка Клієнта (€)", wi_carrier_rate: "Ставка Перевізника (€)", wi_extra_costs: "Дод. витрати (€)", wi_profit: "Чистий Прибуток", wi_margin: "Маржинальність",
+    wi_distance: "Дистанція (км)", wi_ai_forecast: "AI Прогноз", wi_prob_low: "Низька ймовірність (Дорого)", wi_prob_optimal: "Оптимальна ймовірність", wi_prob_high: "Висока ймовірність (Дешево)",
     kpi_revenue: "Загальний дохід (Місяць)", kpi_active_trips: "Активні Рейси", kpi_avg_margin: "Середня Маржа (%)", kpi_reliability: "КРІ Надійності",
     kpi_optimal: "Оптимально", kpi_no_delays: "Без запізнень", kpi_trips_pending: "очікують",
     tooltip_revenue: "Сума доходів від усіх доставлених та активних рейсів.",
@@ -85,6 +86,7 @@ const i18n = {
     btn_new_order: "New Order", btn_export_excel: "Export to Excel",
     nav_inventory: "Inventory", inv_total_items: "Total Items", inv_skus: "Total SKUs", inv_alerts: "Alerts", inv_capacity: "Warehouse Capacity", view_title_inventory: "Inventory Dashboard",
     nav_whatif: "Margin Calculator", wi_client_rate: "Client Rate (€)", wi_carrier_rate: "Carrier Rate (€)", wi_extra_costs: "Extra Costs (€)", wi_profit: "Net Profit", wi_margin: "Margin",
+    wi_distance: "Distance (km)", wi_ai_forecast: "AI Forecast", wi_prob_low: "Low Win Prob. (Expensive)", wi_prob_optimal: "Optimal Win Prob.", wi_prob_high: "High Win Prob. (Cheap)",
     kpi_revenue: "Total Revenue (Month)", kpi_active_trips: "Active Trips", kpi_avg_margin: "Avg Margin (%)", kpi_reliability: "Reliability KPI",
     kpi_optimal: "Optimal", kpi_no_delays: "No critical delays", kpi_trips_pending: "pending",
     tooltip_revenue: "Sum of revenue from all delivered and active trips.",
@@ -1454,22 +1456,42 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================================
 
 function initWhatIfCalculator() {
+    const elDistance = document.getElementById('wi-distance');
     const elClientRate = document.getElementById('wi-client-rate');
     const elCarrierRate = document.getElementById('wi-carrier-rate');
     const elExtraCosts = document.getElementById('wi-extra-costs');
     
+    const elClientKm = document.getElementById('wi-client-km');
+    const elCarrierKm = document.getElementById('wi-carrier-km');
+
     const elProfitVal = document.getElementById('wi-profit-val');
     const elMarginVal = document.getElementById('wi-margin-val');
     const elMarginBadge = document.getElementById('wi-margin-badge');
     const elMarginIcon = document.getElementById('wi-margin-icon');
     const elProgressBar = document.getElementById('wi-progress-bar');
+    
+    const elDonutChart = document.getElementById('wi-donut-chart');
+    
+    const elAiCard = document.getElementById('wi-ai-card');
+    const elAiIcon = document.getElementById('wi-ai-icon');
+    const elAiText = document.getElementById('wi-ai-text');
 
     if (!elClientRate) return;
 
     function calculateWhatIf() {
+        const dist = parseFloat(elDistance ? elDistance.value : 0) || 0;
         const client = parseFloat(elClientRate.value) || 0;
         const carrier = parseFloat(elCarrierRate.value) || 0;
         const extra = parseFloat(elExtraCosts.value) || 0;
+
+        // Calculate €/km
+        if (dist > 0) {
+            if (elClientKm) elClientKm.textContent = (client / dist).toFixed(2);
+            if (elCarrierKm) elCarrierKm.textContent = (carrier / dist).toFixed(2);
+        } else {
+            if (elClientKm) elClientKm.textContent = "0.00";
+            if (elCarrierKm) elCarrierKm.textContent = "0.00";
+        }
 
         const profit = client - (carrier + extra);
         const marginP = client > 0 ? (profit / client) * 100 : 0;
@@ -1477,46 +1499,117 @@ function initWhatIfCalculator() {
         elProfitVal.textContent = '€' + profit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         elMarginVal.textContent = marginP.toFixed(2) + '%';
         
-        // Visual indicator up to 30% for full bar
+        // Progress bar visual indicator
         let progressW = Math.min(Math.max((marginP / 30) * 100, 0), 100);
-        elProgressBar.style.width = progressW + '%';
+        if (elProgressBar) elProgressBar.style.width = progressW + '%';
 
-        // Update colors based on margin
-        elMarginBadge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full border transition-colors';
+        // Donut Chart logic
+        if (client > 0 && elDonutChart) {
+            let carrierPct = (carrier / client) * 100;
+            let extraPct = (extra / client) * 100;
+            let profitPct = (profit / client) * 100;
+            
+            if (profit < 0) {
+                carrierPct = (carrier / (carrier + extra)) * 100;
+                extraPct = 100 - carrierPct;
+                profitPct = 0;
+            }
+
+            const p1 = Math.min(Math.max(carrierPct, 0), 100);
+            const p2 = Math.min(Math.max(carrierPct + extraPct, 0), 100);
+            elDonutChart.style.background = `conic-gradient(#3b82f6 0% ${p1}%, #f59e0b ${p1}% ${p2}%, #10b981 ${p2}% 100%)`;
+        }
+
+        if (!elMarginBadge) return;
+
+        elMarginBadge.className = 'inline-flex items-center gap-2 px-4 py-1.5 rounded-full border transition-colors';
+        if (elAiCard) elAiCard.className = 'bg-gray-50 rounded-2xl p-4 flex items-center gap-4 border transition-colors';
         
-        if (marginP >= 15) {
+        const locLang = window.currentLang || 'uk';
+        const i18nDict = window.translations ? window.translations[locLang] : {};
+
+        const txtLow = i18nDict['wi_prob_low'] || 'Low';
+        const txtOptimal = i18nDict['wi_prob_optimal'] || 'Optimal';
+        const txtHigh = i18nDict['wi_prob_high'] || 'High';
+
+        if (marginP >= 20) {
             elMarginBadge.classList.add('bg-emerald-50', 'border-emerald-200');
-            elMarginIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors';
-            elProfitVal.className = 'text-6xl font-black font-headline text-emerald-600 tracking-tighter transition-colors';
-            elMarginVal.className = 'text-3xl font-black font-headline text-emerald-700 transition-colors';
-            elProgressBar.className = 'h-full bg-emerald-500 transition-all duration-500';
+            elMarginIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors text-sm';
+            elProfitVal.className = 'text-5xl font-black font-headline text-emerald-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-xl font-black font-headline text-emerald-700 transition-colors';
+            if (elProgressBar) elProgressBar.className = 'h-full bg-emerald-500 transition-all duration-500';
             elMarginIcon.textContent = 'trending_up';
-        } else if (marginP >= 5) {
+            
+            if (elAiCard) {
+                elAiCard.classList.add('bg-blue-50', 'border-blue-100');
+                elAiIcon.className = 'material-symbols-outlined text-blue-500 transition-colors';
+                elAiText.className = 'text-sm font-bold text-blue-700 transition-colors';
+                elAiText.textContent = txtLow;
+                elAiIcon.textContent = 'sentiment_dissatisfied';
+            }
+        } else if (marginP >= 10) {
+            elMarginBadge.classList.add('bg-emerald-50', 'border-emerald-200');
+            elMarginIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors text-sm';
+            elProfitVal.className = 'text-5xl font-black font-headline text-emerald-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-xl font-black font-headline text-emerald-700 transition-colors';
+            if (elProgressBar) elProgressBar.className = 'h-full bg-emerald-500 transition-all duration-500';
+            elMarginIcon.textContent = 'trending_up';
+
+            if (elAiCard) {
+                elAiCard.classList.add('bg-emerald-50', 'border-emerald-100');
+                elAiIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors';
+                elAiText.className = 'text-sm font-bold text-emerald-700 transition-colors';
+                elAiText.textContent = txtOptimal;
+                elAiIcon.textContent = 'sentiment_very_satisfied';
+            }
+        } else if (marginP > 0) {
             elMarginBadge.classList.add('bg-amber-50', 'border-amber-200');
-            elMarginIcon.className = 'material-symbols-outlined text-amber-500 transition-colors';
-            elProfitVal.className = 'text-6xl font-black font-headline text-amber-600 tracking-tighter transition-colors';
-            elMarginVal.className = 'text-3xl font-black font-headline text-amber-700 transition-colors';
-            elProgressBar.className = 'h-full bg-amber-500 transition-all duration-500';
+            elMarginIcon.className = 'material-symbols-outlined text-amber-500 transition-colors text-sm';
+            elProfitVal.className = 'text-5xl font-black font-headline text-amber-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-xl font-black font-headline text-amber-700 transition-colors';
+            if (elProgressBar) elProgressBar.className = 'h-full bg-amber-500 transition-all duration-500';
             elMarginIcon.textContent = 'trending_flat';
+            
+            if (elAiCard) {
+                elAiCard.classList.add('bg-amber-50', 'border-amber-100');
+                elAiIcon.className = 'material-symbols-outlined text-amber-500 transition-colors';
+                elAiText.className = 'text-sm font-bold text-amber-700 transition-colors';
+                elAiText.textContent = txtHigh;
+                elAiIcon.textContent = 'sentiment_satisfied';
+            }
         } else {
             elMarginBadge.classList.add('bg-red-50', 'border-red-200');
-            elMarginIcon.className = 'material-symbols-outlined text-red-500 transition-colors';
-            elProfitVal.className = 'text-6xl font-black font-headline text-red-600 tracking-tighter transition-colors';
-            elMarginVal.className = 'text-3xl font-black font-headline text-red-700 transition-colors';
-            elProgressBar.className = 'h-full bg-red-500 transition-all duration-500';
+            elMarginIcon.className = 'material-symbols-outlined text-red-500 transition-colors text-sm';
+            elProfitVal.className = 'text-5xl font-black font-headline text-red-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-xl font-black font-headline text-red-700 transition-colors';
+            if (elProgressBar) elProgressBar.className = 'h-full bg-red-500 transition-all duration-500';
             elMarginIcon.textContent = 'trending_down';
+
+            if (elAiCard) {
+                elAiCard.classList.add('bg-red-50', 'border-red-100');
+                elAiIcon.className = 'material-symbols-outlined text-red-500 transition-colors';
+                elAiText.className = 'text-sm font-bold text-red-700 transition-colors';
+                elAiText.textContent = locLang === 'uk' ? 'Збитковий рейс' : 'Loss-making trip';
+                elAiIcon.textContent = 'warning';
+            }
         }
     }
 
-    elClientRate.addEventListener('input', calculateWhatIf);
-    elCarrierRate.addEventListener('input', calculateWhatIf);
-    elExtraCosts.addEventListener('input', calculateWhatIf);
+    if (elDistance) elDistance.addEventListener('input', calculateWhatIf);
+    if (elClientRate) elClientRate.addEventListener('input', calculateWhatIf);
+    if (elCarrierRate) elCarrierRate.addEventListener('input', calculateWhatIf);
+    if (elExtraCosts) elExtraCosts.addEventListener('input', calculateWhatIf);
 
-    // Initial calc
+    const langBtns = document.querySelectorAll('.lang-btn');
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            setTimeout(calculateWhatIf, 100);
+        });
+    });
+
     calculateWhatIf();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initWhatIfCalculator();
 });
-
