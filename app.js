@@ -48,7 +48,7 @@ const i18n = {
   uk: {
     nav_subtitle: "TMS Нового Покоління", nav_dashboard: "Дашборд", nav_trips: "Рейси та Замовлення", nav_carriers: "База Перевізників",
     nav_radar: "Тендерний Радар", nav_copilot: "AI Асистент", nav_system_active: "Система Активна", view_title_dashboard: "Дашборд",
-    btn_new_order: "Нове Замовлення",
+    btn_new_order: "Нове Замовлення", btn_export_excel: "Експорт в Excel",
     kpi_revenue: "Загальний дохід (Місяць)", kpi_active_trips: "Активні Рейси", kpi_avg_margin: "Середня Маржа (%)", kpi_reliability: "КРІ Надійності",
     kpi_optimal: "Оптимально", kpi_no_delays: "Без запізнень", kpi_trips_pending: "очікують",
     tooltip_revenue: "Сума доходів від усіх доставлених та активних рейсів.",
@@ -80,7 +80,7 @@ const i18n = {
   en: {
     nav_subtitle: "Next-Gen TMS", nav_dashboard: "Dashboard", nav_trips: "Trips & Orders", nav_carriers: "Carriers Base",
     nav_radar: "Tender Radar", nav_copilot: "AI Copilot", nav_system_active: "System Active", view_title_dashboard: "Dashboard",
-    btn_new_order: "New Order",
+    btn_new_order: "New Order", btn_export_excel: "Export to Excel",
     kpi_revenue: "Total Revenue (Month)", kpi_active_trips: "Active Trips", kpi_avg_margin: "Avg Margin (%)", kpi_reliability: "Reliability KPI",
     kpi_optimal: "Optimal", kpi_no_delays: "No critical delays", kpi_trips_pending: "pending",
     tooltip_revenue: "Sum of revenue from all delivered and active trips.",
