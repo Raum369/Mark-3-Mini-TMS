@@ -107,6 +107,10 @@
                 <span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="inventory_2">inventory_2</span>
                 <span class="font-body text-sm font-semibold" data-i18n="nav_inventory">Складські залишки</span>
             </a>
+            <a href="#" class="nav-btn flex items-center gap-4 px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group" data-target="view-whatif">
+                <span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="functions">functions</span>
+                <span class="font-body text-sm font-semibold" data-i18n="nav_whatif">Калькулятор Маржі</span>
+            </a>
             <div class="my-6 border-t border-white/10 mx-4"></div>
             <a href="#" id="btn-toggle-radar" class="flex flex-col px-4 py-3.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all group">
                 <div class="flex items-center gap-4 w-full">
@@ -468,6 +472,54 @@
                                 <!-- Rendered via JS -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: WHAT-IF (Hidden by default) -->
+            <div id="view-whatif" class="spa-view hidden max-w-[1600px] mx-auto w-full">
+                <h2 class="text-2xl font-headline font-bold text-primary mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-3xl">functions</span>
+                    <span data-i18n="nav_whatif">Калькулятор Маржі</span>
+                </h2>
+                
+                <div class="grid grid-cols-2 gap-8">
+                    <!-- Inputs -->
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_client_rate">Ставка Клієнта (€)</label>
+                                <input type="number" id="wi-client-rate" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-lg font-bold text-gray-800 focus:ring-2 focus:ring-primary outline-none transition-shadow" value="1200" step="50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_carrier_rate">Ставка Перевізника (€)</label>
+                                <input type="number" id="wi-carrier-rate" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-lg font-bold text-gray-800 focus:ring-2 focus:ring-primary outline-none transition-shadow" value="900" step="50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2" data-i18n="wi_extra_costs">Додаткові витрати (€)</label>
+                                <input type="number" id="wi-extra-costs" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-lg font-bold text-gray-800 focus:ring-2 focus:ring-primary outline-none transition-shadow" value="50" step="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8 flex flex-col justify-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-2 bg-gray-100" id="wi-progress-bg">
+                            <div class="h-full bg-emerald-500 transition-all duration-500" id="wi-progress-bar" style="width: 0%"></div>
+                        </div>
+                        
+                        <div class="mb-8 mt-4 text-center">
+                            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2" data-i18n="wi_profit">Чистий Прибуток</p>
+                            <p class="text-6xl font-black font-headline text-gray-800 tracking-tighter" id="wi-profit-val">€0</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2" data-i18n="wi_margin">Маржинальність</p>
+                            <div class="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gray-50 border border-gray-100" id="wi-margin-badge">
+                                <span class="material-symbols-outlined text-gray-400" id="wi-margin-icon">analytics</span>
+                                <span class="text-3xl font-black font-headline text-gray-800" id="wi-margin-val">0%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

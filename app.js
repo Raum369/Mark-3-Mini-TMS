@@ -50,6 +50,7 @@ const i18n = {
     nav_radar: "Тендерний Радар", nav_copilot: "AI Асистент", nav_system_active: "Система Активна", view_title_dashboard: "Дашборд",
     btn_new_order: "Нове Замовлення", btn_export_excel: "Експорт в Excel",
     nav_inventory: "Складські залишки", inv_total_items: "Всього товарів", inv_skus: "Кількість SKU", inv_alerts: "Дефіцит", inv_capacity: "Заповненість складу", view_title_inventory: "Склад",
+    nav_whatif: "Калькулятор Маржі", wi_client_rate: "Ставка Клієнта (€)", wi_carrier_rate: "Ставка Перевізника (€)", wi_extra_costs: "Дод. витрати (€)", wi_profit: "Чистий Прибуток", wi_margin: "Маржинальність",
     kpi_revenue: "Загальний дохід (Місяць)", kpi_active_trips: "Активні Рейси", kpi_avg_margin: "Середня Маржа (%)", kpi_reliability: "КРІ Надійності",
     kpi_optimal: "Оптимально", kpi_no_delays: "Без запізнень", kpi_trips_pending: "очікують",
     tooltip_revenue: "Сума доходів від усіх доставлених та активних рейсів.",
@@ -83,6 +84,7 @@ const i18n = {
     nav_radar: "Tender Radar", nav_copilot: "AI Copilot", nav_system_active: "System Active", view_title_dashboard: "Dashboard",
     btn_new_order: "New Order", btn_export_excel: "Export to Excel",
     nav_inventory: "Inventory", inv_total_items: "Total Items", inv_skus: "Total SKUs", inv_alerts: "Alerts", inv_capacity: "Warehouse Capacity", view_title_inventory: "Inventory Dashboard",
+    nav_whatif: "Margin Calculator", wi_client_rate: "Client Rate (€)", wi_carrier_rate: "Carrier Rate (€)", wi_extra_costs: "Extra Costs (€)", wi_profit: "Net Profit", wi_margin: "Margin",
     kpi_revenue: "Total Revenue (Month)", kpi_active_trips: "Active Trips", kpi_avg_margin: "Avg Margin (%)", kpi_reliability: "Reliability KPI",
     kpi_optimal: "Optimal", kpi_no_delays: "No critical delays", kpi_trips_pending: "pending",
     tooltip_revenue: "Sum of revenue from all delivered and active trips.",
@@ -1444,5 +1446,77 @@ document.addEventListener('DOMContentLoaded', () => {
             renderInventory();
         });
     }
+});
+
+
+// ==========================================================================
+// WHAT-IF CALCULATOR MODULE
+// ==========================================================================
+
+function initWhatIfCalculator() {
+    const elClientRate = document.getElementById('wi-client-rate');
+    const elCarrierRate = document.getElementById('wi-carrier-rate');
+    const elExtraCosts = document.getElementById('wi-extra-costs');
+    
+    const elProfitVal = document.getElementById('wi-profit-val');
+    const elMarginVal = document.getElementById('wi-margin-val');
+    const elMarginBadge = document.getElementById('wi-margin-badge');
+    const elMarginIcon = document.getElementById('wi-margin-icon');
+    const elProgressBar = document.getElementById('wi-progress-bar');
+
+    if (!elClientRate) return;
+
+    function calculateWhatIf() {
+        const client = parseFloat(elClientRate.value) || 0;
+        const carrier = parseFloat(elCarrierRate.value) || 0;
+        const extra = parseFloat(elExtraCosts.value) || 0;
+
+        const profit = client - (carrier + extra);
+        const marginP = client > 0 ? (profit / client) * 100 : 0;
+
+        elProfitVal.textContent = '€' + profit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        elMarginVal.textContent = marginP.toFixed(2) + '%';
+        
+        // Visual indicator up to 30% for full bar
+        let progressW = Math.min(Math.max((marginP / 30) * 100, 0), 100);
+        elProgressBar.style.width = progressW + '%';
+
+        // Update colors based on margin
+        elMarginBadge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full border transition-colors';
+        
+        if (marginP >= 15) {
+            elMarginBadge.classList.add('bg-emerald-50', 'border-emerald-200');
+            elMarginIcon.className = 'material-symbols-outlined text-emerald-500 transition-colors';
+            elProfitVal.className = 'text-6xl font-black font-headline text-emerald-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-3xl font-black font-headline text-emerald-700 transition-colors';
+            elProgressBar.className = 'h-full bg-emerald-500 transition-all duration-500';
+            elMarginIcon.textContent = 'trending_up';
+        } else if (marginP >= 5) {
+            elMarginBadge.classList.add('bg-amber-50', 'border-amber-200');
+            elMarginIcon.className = 'material-symbols-outlined text-amber-500 transition-colors';
+            elProfitVal.className = 'text-6xl font-black font-headline text-amber-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-3xl font-black font-headline text-amber-700 transition-colors';
+            elProgressBar.className = 'h-full bg-amber-500 transition-all duration-500';
+            elMarginIcon.textContent = 'trending_flat';
+        } else {
+            elMarginBadge.classList.add('bg-red-50', 'border-red-200');
+            elMarginIcon.className = 'material-symbols-outlined text-red-500 transition-colors';
+            elProfitVal.className = 'text-6xl font-black font-headline text-red-600 tracking-tighter transition-colors';
+            elMarginVal.className = 'text-3xl font-black font-headline text-red-700 transition-colors';
+            elProgressBar.className = 'h-full bg-red-500 transition-all duration-500';
+            elMarginIcon.textContent = 'trending_down';
+        }
+    }
+
+    elClientRate.addEventListener('input', calculateWhatIf);
+    elCarrierRate.addEventListener('input', calculateWhatIf);
+    elExtraCosts.addEventListener('input', calculateWhatIf);
+
+    // Initial calc
+    calculateWhatIf();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initWhatIfCalculator();
 });
 
